@@ -40,7 +40,7 @@ public class User {
     @Column(name = "type")
     private EUserType type;
     @Column(name = "location")
-    private ELocation location;
+    private String location;
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
