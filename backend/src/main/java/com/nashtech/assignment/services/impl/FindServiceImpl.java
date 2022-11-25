@@ -2,9 +2,9 @@ package com.nashtech.assignment.services.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.nashtech.assignment.services.FilterService;
+import com.nashtech.assignment.services.FindService;
 
 @Service
-public class FilterServiceImpl implements FilterService {
+public class FindServiceImpl implements FindService {
     
 }

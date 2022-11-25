@@ -1,7 +1,6 @@
 package com.nashtech.assignment.data.entities;
 
 import com.nashtech.assignment.data.constants.EGender;
-import com.nashtech.assignment.data.constants.ELocation;
 import com.nashtech.assignment.data.constants.EUserType;
 import lombok.*;
 
@@ -38,15 +37,22 @@ public class User {
     @Column(name = "joined_date")
     private Date joinedDate;
     @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private EUserType type;
     @Column(name = "location")
     private String location;
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<AssignAsset> assignAssets;
+    @OneToMany(mappedBy = "userAssignedTo", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<AssignAsset> yourBorrowed;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ReturnAsset> returnAssets;
+    @OneToMany(mappedBy = "userAssignedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<AssignAsset> yourAssignedTo;
+
+    @OneToMany(mappedBy = "userRequestedReturn", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ReturnAsset> yourRequestedReturn;
+
+    @OneToMany(mappedBy = "userAcceptedReturn", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ReturnAsset> yourAcceptedReturn;
 }

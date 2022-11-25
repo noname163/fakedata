@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByLocation(String location, Pageable pageable);
     List<User> findByUsernameOrStaffCodeContaining(String name, String staffCode);
     List<User> findByType(EUserType type);
+    List<User> findByUsernameOrStaffCodeContainingAndType(String name, String staffCode, EUserType type);
 }

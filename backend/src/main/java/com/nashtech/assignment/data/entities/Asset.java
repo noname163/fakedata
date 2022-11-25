@@ -1,7 +1,6 @@
 package com.nashtech.assignment.data.entities;
 
 import com.nashtech.assignment.data.constants.EAssetStatus;
-import com.nashtech.assignment.data.constants.ELocation;
 import lombok.*;
 
 import javax.persistence.*;
@@ -20,6 +19,8 @@ public class Asset {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "asset_name")
+    private String name;
     @Column(name = "asset_code")
     private String assetCode;
     @Column(name = "installed_date")
@@ -29,7 +30,7 @@ public class Asset {
     @Column(name = "status")
     private EAssetStatus status;
     @Column(name = "location")
-    private ELocation location;
+    private String location;
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
