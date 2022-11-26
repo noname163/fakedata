@@ -34,13 +34,13 @@ public class Asset {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "asset", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "asset", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private List<AssignAsset> assignAssets;
 
-    @OneToMany(mappedBy = "asset", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "asset", fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     private List<ReturnAsset> returnAssets;
 }
