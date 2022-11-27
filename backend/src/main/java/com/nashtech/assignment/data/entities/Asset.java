@@ -27,6 +27,7 @@ public class Asset {
     private Date installedDate;
     @Column(name = "specification", columnDefinition = "text")
     private String specification;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EAssetStatus status;
     @Column(name = "location")
