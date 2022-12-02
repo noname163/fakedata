@@ -15,15 +15,17 @@ import com.nashtech.assignment.data.constants.EGender;
 import com.nashtech.assignment.data.constants.EUserType;
 import com.nashtech.assignment.data.entities.Asset;
 import com.nashtech.assignment.data.entities.AssignAsset;
+import com.nashtech.assignment.data.entities.Category;
 import com.nashtech.assignment.data.entities.User;
 import com.nashtech.assignment.data.repositories.AssetRepository;
 import com.nashtech.assignment.data.repositories.AssignAssetRepository;
+import com.nashtech.assignment.data.repositories.CategoryRepository;
 import com.nashtech.assignment.data.repositories.UserRepository;
 
 @Configuration
 public class Database {
         @Bean
-        CommandLineRunner initDatabase(UserRepository userRepository,
+        CommandLineRunner initDatabase(UserRepository userRepository, CategoryRepository categoryRepository,
                         AssignAssetRepository assignRepository, AssetRepository assetRepository) {
                 return new CommandLineRunner() {
 
@@ -86,43 +88,54 @@ public class Database {
                                 users.add(rootUser);
                                 userRepository.saveAll(users);
 
-                                String[] laptops = { "Lenovo ThinkPad X1 Carbon Gen ", "Lenovo ThinkPad X13 AMD",
-                                                "Lenovo ThinkPad X1 Nano Gen",
-                                                "Lenovo ThinkPad X1 Yoga Gen ", "Lenovo ThinkPad X1 Extreme Gen " };
+                                Category category = Category.builder().name("Laptop")
+                                                .prefixAssetCode("LP")
+                                                .build();
+                                categoryRepository.save(category);
+
+                                String[] laptops = { "Lenovo ThinkPad X1 Carbon Gen ", "Lenovo ThinkPad X13 AMD ",
+                                                "MSI Pulse GL66 11UGK-869 ","ASUS ExpertBook B3 Flip ","MacBook Pro ",
+                                                "MSI GS66 Stealth ", "ASUS Chromebook Flip CX5", "MacBook Air " };
                                 List<Asset> assets = new ArrayList<>();
-                                int numberAssert = 10;
+                                int numberAssert = 50;
+                                List<EAssignStatus> eAssignStatus = new ArrayList<>();
+                                eAssignStatus.add(EAssignStatus.ACCEPTED);
+                                eAssignStatus.add(EAssignStatus.WAITING_FOR_ACCEPTANCE);
+                                eAssignStatus.add(EAssignStatus.DECLINED);
                                 for (int i = 0; i < numberAssert; i++) {
                                         int randomLaptopName = random.nextInt(laptops.length);
+                                        
                                         Asset asset = Asset.builder()
-                                                        .assetCode("LP000"+String.valueOf(i))
-                                                        .category(null)
+                                                        .assetCode("LP000" + String.valueOf(i))
+                                                        .category(category)
                                                         .installedDate(date)
                                                         .isDeleted(false)
                                                         .location("HCM")
-                                                        .name(laptops[randomLaptopName]+String.valueOf(i))
+                                                        .name(laptops[randomLaptopName] + String.valueOf(i))
                                                         .status(EAssetStatus.AVAILABLE)
                                                         .build();
                                         assets.add(asset);
                                 }
                                 assetRepository.saveAll(assets);
-                                int numberOfAssignAsset = 5;
+                                int numberOfAssignAsset = 70;
                                 List<AssignAsset> assignAssets = new ArrayList<>();
                                 for (int i = 0; i < numberOfAssignAsset; i++) {
                                         int randomAsset = random.nextInt(assets.size());
                                         int randomUser = random.nextInt(users.size());
-                                        AssignAsset assignAsset =  AssignAsset.builder()
-                                .asset(assets.get(randomAsset))
-                                .isDeleted(random.nextBoolean())
-                                .status(EAssignStatus.ACCEPTED)
-                                .assignedDate(date)
-                                .note("Something")
-                                .userAssignedBy(rootUser)
-                                .userAssignedTo(users.get(randomUser))
-                                .build();
-                                assignAssets.add(assignAsset);
+                                        int randomEAssignStatus = random.nextInt(eAssignStatus.size());
+                                        AssignAsset assignAsset = AssignAsset.builder()
+                                                        .asset(assets.get(randomAsset))
+                                                        .isDeleted(false)
+                                                        .status(eAssignStatus.get(randomEAssignStatus))
+                                                        .assignedDate(date)
+                                                        .note("Something")
+                                                        .userAssignedBy(rootUser)
+                                                        .userAssignedTo(users.get(randomUser))
+                                                        .build();
+                                        assignAssets.add(assignAsset);
                                 }
                                 assignRepository.saveAll(assignAssets);
-                                
+
                         }
 
                 };

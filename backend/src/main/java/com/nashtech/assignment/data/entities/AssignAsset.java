@@ -22,6 +22,7 @@ public class AssignAsset {
     private Date assignedDate;
     @Column(name = "note", columnDefinition = "text")
     private String note;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EAssignStatus status;
     @Column(name = "is_deleted")
