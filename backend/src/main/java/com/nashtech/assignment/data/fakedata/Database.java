@@ -12,21 +12,24 @@ import org.springframework.context.annotation.Configuration;
 import com.nashtech.assignment.data.constants.EAssetStatus;
 import com.nashtech.assignment.data.constants.EAssignStatus;
 import com.nashtech.assignment.data.constants.EGender;
+import com.nashtech.assignment.data.constants.EReturnStatus;
 import com.nashtech.assignment.data.constants.EUserType;
 import com.nashtech.assignment.data.entities.Asset;
 import com.nashtech.assignment.data.entities.AssignAsset;
 import com.nashtech.assignment.data.entities.Category;
+import com.nashtech.assignment.data.entities.ReturnAsset;
 import com.nashtech.assignment.data.entities.User;
 import com.nashtech.assignment.data.repositories.AssetRepository;
 import com.nashtech.assignment.data.repositories.AssignAssetRepository;
 import com.nashtech.assignment.data.repositories.CategoryRepository;
+import com.nashtech.assignment.data.repositories.ReturnAssetRepository;
 import com.nashtech.assignment.data.repositories.UserRepository;
 
 @Configuration
 public class Database {
         @Bean
         CommandLineRunner initDatabase(UserRepository userRepository, CategoryRepository categoryRepository,
-                        AssignAssetRepository assignRepository, AssetRepository assetRepository) {
+                        AssignAssetRepository assignRepository, AssetRepository assetRepository, ReturnAssetRepository returnAssetRepository) {
                 return new CommandLineRunner() {
 
                         @Override
@@ -91,7 +94,18 @@ public class Database {
                                 Category category = Category.builder().name("Laptop")
                                                 .prefixAssetCode("LP")
                                                 .build();
-                                categoryRepository.save(category);
+                                Category category2 = Category.builder().name("BlueTooth")
+                                .prefixAssetCode("BT").build();
+                                Category category3 = Category.builder().name("Mouse")
+                                .prefixAssetCode("MO").build();
+                                List<Category> categories = new ArrayList<>();
+                                categories.add(category3);
+                                categories.add(category2);
+                                categories.add(category);
+                                categoryRepository.saveAll(categories);
+
+                                EAssetStatus[] assetStatus = {EAssetStatus.ASSIGNED, EAssetStatus.AVAILABLE,
+                                         EAssetStatus.NOT_AVAILABLE, EAssetStatus.RECYCLED, EAssetStatus.WAITING_FOR_RECYCLING};
 
                                 String[] laptops = { "Lenovo ThinkPad X1 Carbon Gen ", "Lenovo ThinkPad X13 AMD ",
                                                 "MSI Pulse GL66 11UGK-869 ","ASUS ExpertBook B3 Flip ","MacBook Pro ",
@@ -104,15 +118,16 @@ public class Database {
                                 eAssignStatus.add(EAssignStatus.DECLINED);
                                 for (int i = 0; i < numberAssert; i++) {
                                         int randomLaptopName = random.nextInt(laptops.length);
-                                        
+                                        int randomCategory = random.nextInt(categories.size());
+                                        int randomEAssetStatus = random.nextInt(assetStatus.length);
                                         Asset asset = Asset.builder()
                                                         .assetCode("LP000" + String.valueOf(i))
-                                                        .category(category)
+                                                        .category(categories.get(randomCategory))
                                                         .installedDate(date)
                                                         .isDeleted(false)
                                                         .location("HCM")
                                                         .name(laptops[randomLaptopName] + String.valueOf(i))
-                                                        .status(EAssetStatus.AVAILABLE)
+                                                        .status(assetStatus[randomEAssetStatus])
                                                         .build();
                                         assets.add(asset);
                                 }
@@ -135,6 +150,23 @@ public class Database {
                                         assignAssets.add(assignAsset);
                                 }
                                 assignRepository.saveAll(assignAssets);
+                                List<ReturnAsset> returnAssets = new ArrayList<>();
+                                EReturnStatus[] eReturnStatus = {EReturnStatus.COMPLETED,EReturnStatus.WAITING_FOR_RETURNING};
+                                for(int i =0; i<30; i++){
+                                        int randomAsset = random.nextInt(assets.size());
+                                        int randomStatus = random.nextInt(eReturnStatus.length);
+                                        int randomRequestUser = random.nextInt(users.size());
+                                        ReturnAsset returnAsset = ReturnAsset.builder()
+                                                .asset(assets.get(randomAsset))
+                                                .assignAsset(assignAssets.get(i))
+                                                .isDeleted(false)
+                                                .status(eReturnStatus[randomStatus])
+                                                .userAcceptedReturn(rootUser)
+                                                .userRequestedReturn(users.get(randomRequestUser))
+                                                .build();
+                                        returnAssets.add(returnAsset);
+                                }
+                                returnAssetRepository.saveAll(returnAssets);
 
                         }
 
